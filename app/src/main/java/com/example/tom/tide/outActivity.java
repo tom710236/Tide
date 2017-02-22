@@ -1,8 +1,8 @@
 package com.example.tom.tide;
 
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
-import android.transition.Transition;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -26,8 +26,7 @@ public class outActivity extends AppCompatActivity {
 
     String url = "http://demo.shinda.com.tw/ModernWebApi/WebApi.aspx";
     OkHttpClient client = new OkHttpClient();
-    //String listname1,listname2,listname3,listname;
-    ArrayList trans;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,16 +40,12 @@ public class outActivity extends AppCompatActivity {
             }
         }.start();
 
-        //final String[] trans = {"請選擇",trans};
-        Spinner spinner = (Spinner)findViewById(R.id.spinner);
-        ArrayAdapter<String> list = new ArrayAdapter<>(outActivity.this,
-                android.R.layout.simple_spinner_dropdown_item,
-                trans);
-        spinner.setAdapter(list);
+        //String[] trans = {"請選擇",listname};
+
 
     }
 
-        private void postjson() {
+    private void postjson() {
         RequestBody body = new FormBody.Builder()
                 .add("postdata", "{\"ApiName\":\"GetCustomer\",\"ApiID\":\"S000000001\"}")
                 .build();
@@ -76,45 +71,36 @@ public class outActivity extends AppCompatActivity {
     }
 
 
-
     private void parseJson(String json) {
-        ArrayList<Transition> trans = new ArrayList<>();
+
+
         try {
+
+            ArrayList<String> trans = new ArrayList<String>();
             JSONArray array = new JSONArray(json);
-            for (int i = 0; i<array.length(); i++) {
+            trans.add("請選擇");
+            for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
                 //String id = obj.getString("cCustomerID");
                 String listname = obj.getString("cCustomerName");
-                Log.e("okHTTP5",listname);
+                Log.e("okHTTP5", listname);
+                trans.add(listname);
 
             }
+
+            Looper.prepare();
+
+            Spinner spinner = (Spinner) findViewById(R.id.spinner);
+            ArrayAdapter<String> list = new ArrayAdapter<>(outActivity.this,
+                    android.R.layout.simple_spinner_dropdown_item,
+                    trans);
+            spinner.setAdapter(list);
+            Looper.loop();
 
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-
-
-
-
-
-
-
-            /*
-            JSONArray array = new JSONArray(json);
-            JSONObject obj = array.getJSONObject(0);
-            listname1=obj.getString("cCustomerName");
-            JSONObject obj2 = array.getJSONObject(1);
-            listname2=obj2.getString("cCustomerName");
-            JSONObject obj3 = array.getJSONObject(2);
-            listname3=obj3.getString("cCustomerName");
-            */
-
-
-
-
-
-
 
 }
