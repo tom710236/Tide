@@ -1,7 +1,6 @@
 package com.example.tom.tide;
 
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -104,9 +103,15 @@ public class outActivity extends AppCompatActivity {
                     android.R.layout.simple_spinner_dropdown_item,
                     trans);
 
+            runOnUiThread(new Runnable() {
 
-            Looper.prepare();
-            spinner.setAdapter(list);
+                @Override
+                public void run() {
+                    spinner.setAdapter(list);
+                }
+            });
+
+
 
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -140,7 +145,7 @@ public class outActivity extends AppCompatActivity {
 
         } catch (JSONException e) {
             e.printStackTrace();
-        }Looper.loop();
+        }
     }
     //點擊 spinner項目後 所要執行的方法
     private void postjson2() {
