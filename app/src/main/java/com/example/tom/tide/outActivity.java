@@ -1,8 +1,9 @@
 package com.example.tom.tide;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -47,6 +48,21 @@ public class outActivity extends AppCompatActivity {
             }
 
         }).start();
+
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_chevron_left_black_24dp);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(outActivity.this,systemActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -99,14 +115,20 @@ public class outActivity extends AppCompatActivity {
             //spinner 顯示
 
 
+
             final Spinner spinner = (Spinner) findViewById(R.id.spinner);
             final ArrayAdapter<String> list = new ArrayAdapter<>(outActivity.this,
                     android.R.layout.simple_spinner_dropdown_item,
                     trans);
 
+            runOnUiThread(new Runnable() {
 
-            Looper.prepare();
-            spinner.setAdapter(list);
+                @Override
+                public void run() {
+                    spinner.setAdapter(list);
+                }
+            });
+
 
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -140,7 +162,7 @@ public class outActivity extends AppCompatActivity {
 
         } catch (JSONException e) {
             e.printStackTrace();
-        }Looper.loop();
+        }
     }
     //點擊 spinner項目後 所要執行的方法
     private void postjson2() {

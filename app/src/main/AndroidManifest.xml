@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".systemActivity" />
-        <activity android:name=".outActivity"></activity>
+        <activity android:name=".outActivity">z</activity>
     </application>
 
 </manifest>
