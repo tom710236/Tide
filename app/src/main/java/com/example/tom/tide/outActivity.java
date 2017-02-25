@@ -27,7 +27,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class outActivity extends AppCompatActivity {
-
+    // 宣告
     String url = "http://demo.shinda.com.tw/ModernWebApi/WebApi.aspx";
     String url2 = "http://demo.shinda.com.tw/ModernWebApi/GetShippersByCustomerID.aspx";
     OkHttpClient client = new OkHttpClient();
@@ -190,7 +190,7 @@ public class outActivity extends AppCompatActivity {
             }
         });
     }
-    //POST成功後回傳的值(陣列)取出來 用listView顯示
+    //POST成功後把回傳的值(陣列)取出來 用listView顯示
     private void parseJson2(String json) {
 
 
@@ -203,20 +203,14 @@ public class outActivity extends AppCompatActivity {
                 String listname = obj.getString("cShippersID");
                 Log.e("okHTTP8", listname);
                 trans.add(listname);
-
-
             }
-
-
-
-
             final ListView listView = (ListView)findViewById(R.id.listView);
             listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
             final ArrayAdapter<String> list = new ArrayAdapter<>(outActivity.this,
                     android.R.layout.simple_list_item_multiple_choice,
                     trans);
 
-
+            //非主執行緒顯示UI
             runOnUiThread(new Runnable() {
 
                               @Override

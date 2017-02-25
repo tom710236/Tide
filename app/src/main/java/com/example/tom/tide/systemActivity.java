@@ -14,9 +14,10 @@ import android.widget.TextView;
 import static com.example.tom.tide.R.layout.lview;
 
 public class systemActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
-    //先以字串陣列方式將功能儲存在LoginActivity func陣列
+    //字串陣列方式將功能儲存在func陣列
     String[] func = {"出貨單檢貨", "採購單點貨", "庫存調整", "系統管理",
             "產品資訊撈取"};
+    //int陣列方式將功能儲存在icons陣列
     int[] icons = {R.drawable.ic_keyboard_arrow_right_black_24dp, R.drawable.ic_keyboard_arrow_right_black_24dp, R.drawable.ic_keyboard_arrow_right_black_24dp
             , R.drawable.ic_keyboard_arrow_right_black_24dp, R.drawable.ic_keyboard_arrow_right_black_24dp};
 
@@ -24,14 +25,13 @@ public class systemActivity extends AppCompatActivity implements AdapterView.OnI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_system);
-
+        //listView自訂
         ListView list = (ListView) findViewById(R.id.list);
         IconAdapter gAdapter = new IconAdapter();
-
         list.setAdapter(gAdapter);
         list.setOnItemClickListener(this);
     }
-
+    //ListView 按鍵
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (position) {
