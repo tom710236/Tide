@@ -3,7 +3,6 @@ package com.example.tom.tide;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -25,9 +24,10 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     //宣告
-    String cStatus, userName, passWord;
+    String cStatus, userName, passWord,cUserName;
     String url = "http://demo.shinda.com.tw/ModernWebApi/WebApiLogin.aspx";
     Thread pass;
+
 
 
 
@@ -58,12 +58,12 @@ public class MainActivity extends AppCompatActivity {
             userName = uId.getText().toString();
             passWord = uPw.getText().toString();
             //使用OkHttp post
-            OkHttpClient client = new OkHttpClient();
+            final OkHttpClient client = new OkHttpClient();
             RequestBody body = new FormBody.Builder()
                     //.add("postdata", "{\"cAccount\":\"carlos\",\"cPassword\":\"123\"}")
                     .add("postdata", "{\"cAccount\":\"" + userName + "\",\"cPassword\":\"" + passWord + "\"}")
                     .build();
-            Request request = new Request.Builder()
+            final Request request = new Request.Builder()
                     .url(url)
                     .post(body)
                     .build();
@@ -92,11 +92,16 @@ public class MainActivity extends AppCompatActivity {
 
                     try {
                         cStatus = new JSONObject(json).getString("cStatus");
+                        cUserName = new JSONObject(json).getString("cUserName");
                         Log.e("JSOM", cStatus);
                         if(cStatus.equals("1")){
                             //到另一頁
                             Intent intent = new Intent(MainActivity.this,systemActivity.class);
+                            Bundle bag = new Bundle();
+                            bag.putString("cUserName",cUserName);
+                            intent.putExtras(bag);
                             startActivity(intent);
+                            MainActivity.this.finish();
                             //記住帳號
                             SharedPreferences setting =
                                     getSharedPreferences("Login",MODE_PRIVATE);
@@ -108,9 +113,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                         else{
                             //非主執行緒顯示UI
-                            Looper.prepare();
-                            Toast.makeText(MainActivity.this,"登入失敗 請重新輸入", Toast.LENGTH_SHORT).show();
-                            Looper.loop();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(MainActivity.this,"登入失敗 請重新輸入", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
 
 

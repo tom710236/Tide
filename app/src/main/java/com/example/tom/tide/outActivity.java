@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,8 +32,7 @@ public class outActivity extends AppCompatActivity {
     String url = "http://demo.shinda.com.tw/ModernWebApi/WebApi.aspx";
     String url2 = "http://demo.shinda.com.tw/ModernWebApi/GetShippersByCustomerID.aspx";
     OkHttpClient client = new OkHttpClient();
-
-
+    String cUserName;
 
 
     @Override
@@ -40,33 +40,38 @@ public class outActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_out);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_chevron_left_black_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(outActivity.this,systemActivity.class);
+                Bundle bag = new Bundle();
+                bag.putString("cUserName",cUserName);
+                intent.putExtras(bag);
+                startActivity(intent);
+                outActivity.this.finish();
+            }
+        });
+
+        Intent intent = getIntent();
+        //取得Bundle物件後 再一一取得資料
+        Bundle bag = intent.getExtras();
+        cUserName = bag.getString("cUserName",null);
+        TextView textView = (TextView)findViewById(R.id.textView3);
+        textView.setText(cUserName+"您好");
+
+
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 postjson();
             }
-
         }).start();
-
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_chevron_left_black_24dp);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(outActivity.this,systemActivity.class);
-                startActivity(intent);
-            }
-        });
-
     }
-
-
 
     private void postjson() {
         //post
@@ -97,11 +102,11 @@ public class outActivity extends AppCompatActivity {
 
 
     //POST成功後回傳的值(陣列)取出來 用spinner顯示
-    private void parseJson(String json) {
+    private void parseJson(final String json) {
         //取值
         try {
 
-            ArrayList<String> trans = new ArrayList<String>();
+            final ArrayList<String> trans = new ArrayList<String>();
             JSONArray array = new JSONArray(json);
             trans.add("請選擇");
             for (int i = 0; i < array.length(); i++) {
@@ -112,6 +117,7 @@ public class outActivity extends AppCompatActivity {
                 trans.add(listname);
 
             }
+
             //spinner 顯示
 
 
@@ -121,6 +127,7 @@ public class outActivity extends AppCompatActivity {
                     android.R.layout.simple_spinner_dropdown_item,
                     trans);
 
+
             runOnUiThread(new Runnable() {
 
                 @Override
@@ -129,24 +136,17 @@ public class outActivity extends AppCompatActivity {
                 }
             });
 
-
+            //spinner 點擊事件
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    switch (position) {
-                        case 0:
-                            break;
-                        case 1:
-                            postjson2();
-                            break;
-                        case 2:
-                            postjson2();
-                            break;
-                        case 3:
-                            postjson2();
-                            break;
-                    }
+                    int index = spinner.getSelectedItemPosition();
+                    Log.e("index", String.valueOf(index));
+
+
+
+                    postjson2(json,index);
 
                 }
 
@@ -165,10 +165,20 @@ public class outActivity extends AppCompatActivity {
         }
     }
     //點擊 spinner項目後 所要執行的方法
-    private void postjson2() {
-        RequestBody body = new FormBody.Builder()
-                .add("postdata", "{ cCustomerID: \"C000000001\", cUserID: \"S000000001\" }")
+    private void postjson2(String json,int index) {
+        String door1 = null;
+        try {
 
+            door1 = new JSONArray(json).getJSONObject(index-1).getString("cCustomerID");
+            Log.e("ARRAY",door1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        RequestBody body = new FormBody.Builder()
+                .add("postdata", "{ cCustomerID:\""+door1+"\", cUserID: \"S000000001\" }")
+                //.add("postdata", "{\"cAccount\":\"" + userName + "\",\"cPassword\":\"" + passWord + "\"}")
                 .build();
         Request request = new Request.Builder()
                 .url(url2)
