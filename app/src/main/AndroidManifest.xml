@@ -21,6 +21,7 @@
         <activity android:name=".outActivity">
             z
         </activity>
+        <activity android:name=".orderActivity"></activity>
     </application>
 
 </manifest>

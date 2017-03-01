@@ -5,7 +5,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -18,6 +21,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -33,6 +37,9 @@ public class outActivity extends AppCompatActivity {
     String url2 = "http://demo.shinda.com.tw/ModernWebApi/GetShippersByCustomerID.aspx";
     OkHttpClient client = new OkHttpClient();
     String cUserName;
+    List<String> checked;
+    String door1 = null;
+    int index;
 
 
     @Override
@@ -47,9 +54,9 @@ public class outActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(outActivity.this,systemActivity.class);
+                Intent intent = new Intent(outActivity.this, systemActivity.class);
                 Bundle bag = new Bundle();
-                bag.putString("cUserName",cUserName);
+                bag.putString("cUserName", cUserName);
                 intent.putExtras(bag);
                 startActivity(intent);
                 outActivity.this.finish();
@@ -59,10 +66,9 @@ public class outActivity extends AppCompatActivity {
         Intent intent = getIntent();
         //取得Bundle物件後 再一一取得資料
         Bundle bag = intent.getExtras();
-        cUserName = bag.getString("cUserName",null);
-        TextView textView = (TextView)findViewById(R.id.textView3);
-        textView.setText(cUserName+"您好");
-
+        cUserName = bag.getString("cUserName", null);
+        TextView textView = (TextView) findViewById(R.id.textView3);
+        textView.setText(cUserName + "您好");
 
 
         new Thread(new Runnable() {
@@ -89,6 +95,7 @@ public class outActivity extends AppCompatActivity {
             public void onFailure(Call call, IOException e) {
 
             }
+
             //POST 成功後
             @Override
             public void onResponse(Call call, Response response) throws IOException {
@@ -121,7 +128,6 @@ public class outActivity extends AppCompatActivity {
             //spinner 顯示
 
 
-
             final Spinner spinner = (Spinner) findViewById(R.id.spinner);
             final ArrayAdapter<String> list = new ArrayAdapter<>(outActivity.this,
                     android.R.layout.simple_spinner_dropdown_item,
@@ -141,43 +147,37 @@ public class outActivity extends AppCompatActivity {
 
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    int index = spinner.getSelectedItemPosition();
+                    index = spinner.getSelectedItemPosition();
                     Log.e("index", String.valueOf(index));
-
-
-
-                    postjson2(json,index);
+                    postjson2(json, index);
 
                 }
-
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
-
                     // sometimes you need nothing here
                 }
             }
             );
 
 
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-    //點擊 spinner項目後 所要執行的方法
-    private void postjson2(String json,int index) {
-        String door1 = null;
-        try {
 
-            door1 = new JSONArray(json).getJSONObject(index-1).getString("cCustomerID");
-            Log.e("ARRAY",door1);
+    //點擊 spinner項目後 所要執行的方法
+    private void postjson2(String json, int index) {
+
+        try {
+            door1 = new JSONArray(json).getJSONObject(index - 1).getString("cCustomerID");
+            Log.e("ARRAY", door1);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
 
         RequestBody body = new FormBody.Builder()
-                .add("postdata", "{ cCustomerID:\""+door1+"\", cUserID: \"S000000001\" }")
+                .add("postdata", "{ cCustomerID:\"" + door1 + "\", cUserID: \"S000000001\" }")
                 //.add("postdata", "{\"cAccount\":\"" + userName + "\",\"cPassword\":\"" + passWord + "\"}")
                 .build();
         Request request = new Request.Builder()
@@ -200,42 +200,91 @@ public class outActivity extends AppCompatActivity {
             }
         });
     }
+
     //POST成功後把回傳的值(陣列)取出來 用listView顯示
     private void parseJson2(String json) {
-
-
         try {
-
             final ArrayList<String> trans = new ArrayList<String>();
-            final JSONArray array = new JSONArray(json);
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject obj = array.getJSONObject(i);
-                String listname = obj.getString("cShippersID");
-                Log.e("okHTTP8", listname);
-                trans.add(listname);
+                final JSONArray array = new JSONArray(json);
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject obj = array.getJSONObject(i);
+                    String listname = obj.getString("cShippersID");
+                    Log.e("okHTTP8", listname);
+                    trans.add(listname);
             }
-            final ListView listView = (ListView)findViewById(R.id.listView);
-            listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-            final ArrayAdapter<String> list = new ArrayAdapter<>(outActivity.this,
+            final ListView listView = (ListView) findViewById(R.id.listView);
+            listView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+            final ArrayAdapter<String> list = new ArrayAdapter<>(
+                    outActivity.this,
                     android.R.layout.simple_list_item_multiple_choice,
                     trans);
-
             //非主執行緒顯示UI
             runOnUiThread(new Runnable() {
 
-                              @Override
-                              public void run() {
-                                  listView.setVisibility(View.VISIBLE);
-                                  listView.setAdapter(list);
-                              }
-                          });
+                @Override
+                public void run() {
+                    listView.setVisibility(View.VISIBLE);
+                    listView.setAdapter(list);
+                    //假如選到請選擇 list將不會出現
+                    if (index==0){
+                        listView.setVisibility(View.GONE);
+                    }
+
+                }
+            });
+            /*
+            listView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    int index = listView.getSelectedItemPosition();
+                    Log.e("index2", String.valueOf(index));
+                }
 
 
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            */
+
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+                    AbsListView list = (AbsListView)adapterView;
+                    Adapter adapter = list.getAdapter();
+                    SparseBooleanArray array = list.getCheckedItemPositions();
+                    checked = new ArrayList<>(list.getCheckedItemCount());
+                    for (int i = 0; i < array.size(); i++) {
+                        int key = array.keyAt(i);
+                        if (array.get(key)) {
+                            checked.add((String) adapter.getItem(key));
+                            Log.e("CHECK", String.valueOf(checked));
+
+                        }
+
+                    }
+                }
+            });
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
-
+    public void enter (View v){
+        Intent intent = new Intent(outActivity.this, orderActivity.class);
+        Bundle bag = new Bundle();
+        bag.putString("checked", String.valueOf(checked));
+        bag.putString("order",door1);
+        intent.putExtras(bag);
+        startActivity(intent);
+        outActivity.this.finish();
+    }
 }
+
+
+
+
+
+
+
