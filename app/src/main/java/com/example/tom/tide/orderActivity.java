@@ -21,7 +21,8 @@ public class orderActivity extends AppCompatActivity {
     String check,door1,cUserName;
     String url = "http://demo.shinda.com.tw/ModernWebApi/WebApi.aspx";
     OkHttpClient client = new OkHttpClient();
-
+    String check2 = null;
+    String check3 = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,10 +31,14 @@ public class orderActivity extends AppCompatActivity {
         //取得Bundle物件後 再一一取得資料
         Bundle bag = intent.getExtras();
         check = bag.getString("checked", null);
+        //先取得字串的長度
+        int i =check.length();
+        //
+        check2=check.substring(1,i-1);
+
 
         door1 = bag.getString("order",null);
-        Log.e("CHECK11",check);
-
+        Log.e("CHECK11",check2);
         Log.e("DOOR",door1);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -61,8 +66,7 @@ public class orderActivity extends AppCompatActivity {
     private void postjson() {
         //post
         RequestBody body = new FormBody.Builder()
-                .add("postdata", "{ ApiName: \"GetShippersD\", ApiID: \""+check+"\"}")
-
+                .add("postdata", "{ ApiName: \"GetShippersD\", ApiID: \""+check2+"\"}")
                 .build();
         Request request = new Request.Builder()
                 .url(url)
@@ -80,7 +84,7 @@ public class orderActivity extends AppCompatActivity {
                 String json = response.body().string();
                 Log.e("OkHttp10", response.toString());
                 Log.e("OkHttp11", json);
-                //parseJson(json);S20160000004
+
             }
         });
     }

@@ -40,6 +40,7 @@ public class outActivity extends AppCompatActivity {
     List<String> checked;
     String door1 = null;
     int index;
+    String listname;
 
 
     @Override
@@ -208,7 +209,7 @@ public class outActivity extends AppCompatActivity {
                 final JSONArray array = new JSONArray(json);
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject obj = array.getJSONObject(i);
-                    String listname = obj.getString("cShippersID");
+                    listname = obj.getString("cShippersID");
                     Log.e("okHTTP8", listname);
                     trans.add(listname);
             }
