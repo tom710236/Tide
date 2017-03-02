@@ -23,34 +23,34 @@ public class systemActivity extends AppCompatActivity
     int[] icons = {R.drawable.ic_keyboard_arrow_right_black_24dp, R.drawable.ic_keyboard_arrow_right_black_24dp, R.drawable.ic_keyboard_arrow_right_black_24dp
             , R.drawable.ic_keyboard_arrow_right_black_24dp, R.drawable.ic_keyboard_arrow_right_black_24dp};
     String cUserName;
-    int page=1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_system);
 
+        //Toolbar 設定
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
+        //回到上一頁的圖示
         toolbar.setNavigationIcon(R.drawable.ic_chevron_left_black_24dp);
+        //回到上一頁按鍵設定
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(systemActivity.this,MainActivity.class);
-                startActivityForResult(intent,page);
+                startActivity(intent);
                 systemActivity.this.finish();
-
             }
         });
+
+        //取得另一頁傳過來的cUserName並顯示在TextView
         Intent intent = getIntent();
         Bundle bag = intent.getExtras();
         cUserName = bag.getString("cUserName",null);
         TextView textView = (TextView)findViewById(R.id.textView3);
         textView.setText(cUserName+"您好");
-
-
-
-
 
         //listView自訂
         ListView list = (ListView) findViewById(R.id.list);
@@ -59,11 +59,12 @@ public class systemActivity extends AppCompatActivity
         list.setOnItemClickListener(this);
 
     }
-    //ListView 按鍵
+    //ListView 點擊觸發
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (position) {
             case 0:
+                //點擊後到另一頁 並把cUserName帶到另一頁
                 Intent intent = new Intent(systemActivity.this,outActivity.class);
                 Bundle bag = new Bundle();
                 bag.putString("cUserName",cUserName);
@@ -72,8 +73,6 @@ public class systemActivity extends AppCompatActivity
                 systemActivity.this.finish();
                 break;
             case 1:
-                intent = new Intent(this,outActivity.class);
-                startActivity(intent);
                 break;
             case 2:
                 break;
@@ -91,12 +90,10 @@ public class systemActivity extends AppCompatActivity
         public int getCount() {
             return func.length;
         }
-
         @Override
         public Object getItem(int position) {
             return func[position];
         }
-
         @Override
         public long getItemId(int position) {
             return icons[position];
@@ -104,10 +101,9 @@ public class systemActivity extends AppCompatActivity
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-
+            //設定listView
             View v = convertView;
             if(v == null){
-
                 v =getLayoutInflater().inflate(lview,null);
                 ImageView image = (ImageView)v.findViewById(R.id.img);
                 TextView text = (TextView)v.findViewById(R.id.textView);
