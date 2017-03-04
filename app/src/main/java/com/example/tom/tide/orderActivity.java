@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,7 +33,20 @@ public class orderActivity extends AppCompatActivity {
     OkHttpClient client = new OkHttpClient();
     String check2 = null;
     String check3 = null;
-    String cProductName,cProductID,cShippersCount,cShippersCountEd;
+    String cProductName;
+    String cProductID;
+    String cShippersCount;
+    int cShippersCountEd;
+    String json;
+    EditText editText;
+    String order;
+    ArrayAdapter<String> list, list2;
+    int a = 0;
+    int myint = 0;
+    ArrayList<String> trans, trans2;
+    ListView listView;
+    int number;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +63,11 @@ public class orderActivity extends AppCompatActivity {
         //先取得字串的長度
         int i = check.length();
         //再取字串範圍 (0和最後是[])
+        //取代
         check2 = check.substring(1, i - 1);
         check3 = check2.replaceAll(", ", ",");
 
-        TextView orderName = (TextView)findViewById(R.id.textView11);
+        TextView orderName = (TextView) findViewById(R.id.textView11);
         //把上一頁傳過來的door用TextView顯示
         orderName.setText(door1);
         Log.e("CHECK11", check2);
@@ -82,10 +97,13 @@ public class orderActivity extends AppCompatActivity {
                 postjson();
             }
         }).start();
+
+
     }
+
     //執行執行緒的方法
     private void postjson() {
-        //post
+//post
         RequestBody body = new FormBody.Builder()
                 .add("postdata", "{ ApiName: \"GetShippersD\", ApiID: \"" + check3 + "\"}")
                 .build();
@@ -102,8 +120,9 @@ public class orderActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                //POST後 回傳的JSON檔
-                String json = response.body().string();
+//POST後 回傳的JSON檔
+                json = response.body().string();
+                Log.e("json",json);
                 Log.e("OkHttp10", response.toString());
                 Log.e("OkHttp11", json);
                 parseJson2(json);
@@ -111,24 +130,27 @@ public class orderActivity extends AppCompatActivity {
             }
         });
     }
+
     //取出回傳後JSON的值
     private void parseJson2(String json) {
         try {
-            final ArrayList<String> trans = new ArrayList<String>();
+            trans = new ArrayList<String>();
             final JSONArray array = new JSONArray(json);
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
                 cProductName = obj.getString("cProductName");
                 cProductID = obj.getString("cProductID");
                 cShippersCount = obj.getString("cShippersCount");
-                cShippersCountEd=obj.getString("cShippersCountEd");
-                Log.e("okHTTP15", cProductName+cProductID+cShippersCount);
-                trans.add(cProductName+"("+cProductID+")"+cShippersCount+"("+cShippersCountEd+")");
+                int cShippersCountEd = obj.getInt("cShippersCountEd");
+                Log.e("okHTTP15", cProductName + cProductID + cShippersCount);
+                trans.add(cProductName + "(" + cProductID + ")" + cShippersCount + "(" + cShippersCountEd + ")");
+
+
             }
-            //設定ListView
-            final ListView listView = (ListView) findViewById(R.id.list);
+//設定ListView
+            listView = (ListView) findViewById(R.id.list);
             listView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
-            final ArrayAdapter<String> list = new ArrayAdapter<>(
+            list = new ArrayAdapter<>(
                     orderActivity.this,
                     android.R.layout.simple_list_item_activated_1,
                     trans);
@@ -138,7 +160,7 @@ public class orderActivity extends AppCompatActivity {
 
                 @Override
                 public void run() {
-                    //listView.setVisibility(View.VISIBLE);
+//listView.setVisibility(View.VISIBLE);
                     listView.setAdapter(list);
                 }
             });
@@ -148,4 +170,70 @@ public class orderActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    public void enter(View v) throws JSONException {
+
+        editText = (EditText) findViewById(R.id.editText);
+        order = editText.getText().toString();
+        trans2 = new ArrayList<String>();
+        final JSONArray array = new JSONArray(json);
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject obj = array.getJSONObject(i);
+            Log.e("OBJ", String.valueOf(obj));
+            cProductName = obj.getString("cProductName");
+            cProductID = obj.getString("cProductID");
+            cShippersCount = obj.getString("cShippersCount");
+            int cShippersCountEd2 = obj.getInt("cShippersCountEd");
+            Log.e("cShippersCountEd3", String.valueOf(cShippersCountEd2));
+            Log.e("trans2之前", String.valueOf(trans2));
+            trans2.add(cProductName + "(" + cProductID + ")" + cShippersCount + "(" + cShippersCountEd + ")");
+            Log.e("trans2之後", String.valueOf(trans2));
+            if (order.equals(cProductID)) {
+                Log.e("成功", String.valueOf(array));
+                //第二次cShippersCountEd 因為數量改變 所以找不到索引值
+                int k = trans2.indexOf(cProductName + "(" + cProductID + ")" + cShippersCount + "(" + cShippersCountEd + ")");
+                //int k = trans.indexOf(cProductID);
+                //Log.e("trans2對比後", String.valueOf(trans2));
+                Log.e("比對後索引", String.valueOf(k));
+                //這邊加數字 有問題
+                cShippersCountEd2++;
+                Log.e("cShippersCountEd", String.valueOf(cShippersCountEd));
+                Log.e("cShippersCountEd2", String.valueOf(cShippersCountEd2));
+                //trans.remove(k);
+                trans.set(k, cProductName + "(" + cProductID + ")" + cShippersCount + "(" + cShippersCountEd2 + ")");
+                trans2.set(k, cProductName + "(" + cProductID + ")" + cShippersCount + "(" + cShippersCountEd2 + ")");
+                //Log.e("trans", String.valueOf(trans));
+                //k = trans.indexOf(cProductName + "(" + cProductID + ")" + cShippersCount + "(" + cShippersCountEd + ")");
+
+                //Log.e("int2", String.valueOf(k));
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+
+                        //list.notifyDataSetChanged();
+                        listView.setAdapter(list);
+                        Log.e("listview", String.valueOf(listView));
+                    }
+                });
+
+
+
+
+
+            } else {
+
+                Log.e("比對失敗", String.valueOf(trans));
+            }
+
+
+
+        }
+
+
+
+    }
 }
+
+

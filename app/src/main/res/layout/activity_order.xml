@@ -189,7 +189,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/button6"
                 android:layout_weight="1"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:onClick="enter" />
 
 
         </LinearLayout>
@@ -222,7 +223,7 @@
 
             <ListView
                 android:layout_width="match_parent"
-                android:layout_height="61dp"
+                android:layout_height="119dp"
                 android:id="@+id/list" />
         </LinearLayout>
     </ScrollView>
