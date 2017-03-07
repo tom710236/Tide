@@ -9,6 +9,8 @@
     android:paddingRight="0dp"
     android:paddingTop="0dp"
     tools:context="com.example.tom.tide.orderActivity"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
     <FrameLayout android:layout_height="wrap_content"
         android:layout_width="match_parent">
@@ -78,34 +80,88 @@
             android:layout_weight="1" />
 
         <Button
-            android:text="暫存至SERVER"
+            android:text="換人檢"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/button4"
             android:layout_weight="1" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:text="快速模式"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView10"
+                android:textSize="14sp"
+                android:layout_marginLeft="30dp" />
+
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/switch2"
+                android:layout_marginLeft="30dp"
+                android:textOn="開啟"
+                android:textOff="關閉"
+                android:switchTextAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:layout_marginBottom="2dp" />
+        </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:text="快速模式"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView10"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="10dp"
-        android:textSize="14sp" />
-
-    <Switch
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/switch2"
-        android:layout_marginLeft="30dp"
-        android:textOn="開啟"
-        android:textOff="關閉" />
-
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="30dp"></LinearLayout>
+        android:layout_height="50dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:id="@+id/linear"
+        android:visibility="invisible">
+
+        <Button
+            android:text="加1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:id="@+id/button10"
+            android:onClick="add1" />
+
+        <Button
+            android:text="加3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button9"
+            android:layout_weight="1"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:onClick="add3" />
+
+        <Button
+            android:text="加5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button8"
+            android:layout_weight="1"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:paddingRight="6dp"
+            android:paddingLeft="6dp"
+            android:onClick="add5" />
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
@@ -223,25 +279,16 @@
 
             <ListView
                 android:layout_width="match_parent"
-                android:layout_height="119dp"
-                android:id="@+id/list" />
+                android:id="@+id/list"
+                android:layout_height="165dp" />
         </LinearLayout>
     </ScrollView>
-
-    <Button
-        android:text="返回"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button7"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:textSize="20sp" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="38dp">
+        android:layout_marginTop="12dp"
+        android:layout_gravity="bottom|end">
 
         <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
