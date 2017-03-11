@@ -52,7 +52,7 @@ public class orderActivity extends AppCompatActivity {
     EditText editText;
     ListView listView;
 
-    public class ProductInfo
+       public class ProductInfo
     {
         private String mProductName;
         private String mProductID;
@@ -261,7 +261,7 @@ public class orderActivity extends AppCompatActivity {
                     product.mStocks=product.mStocks+addNum;
                     list.notifyDataSetChanged();
                 }
-        }
+            }
             else if(addNum==0){
 
                 final View item = LayoutInflater.from(orderActivity.this).inflate(R.layout.activity_alertdialog, null);
@@ -291,8 +291,7 @@ public class orderActivity extends AppCompatActivity {
 
 
                             }
-                        })
-                        .show();
+                        }).show();
             }
 
         } else
