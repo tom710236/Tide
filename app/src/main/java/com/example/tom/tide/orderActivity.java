@@ -52,15 +52,13 @@ public class orderActivity extends AppCompatActivity {
     EditText editText;
     ListView listView;
 
-       public class ProductInfo
-    {
+       public class ProductInfo {
         private String mProductName;
         private String mProductID;
         private int mProductCount=0;
         private int mStocks = 0;
 
-        ProductInfo(final String productName, final String productID, int productCount, int cShippersCountEd)
-        {
+        ProductInfo(final String productName, final String productID, int productCount, int cShippersCountEd) {
             this.mProductName = productName;
             this.mProductID = productID;
             this.mProductCount = productCount;
@@ -68,8 +66,7 @@ public class orderActivity extends AppCompatActivity {
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return this.mProductName + "(" + this.mProductID + ") " + this.mProductCount + " (" + this.mStocks + ")";
         }
     }
