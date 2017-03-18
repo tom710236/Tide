@@ -42,8 +42,8 @@ public class orderActivity extends AppCompatActivity {
     String check3 = null;
     String json;
     int addNum=0;
-    LinearLayout linear;
 
+    LinearLayout linear;
     ArrayAdapter<ProductInfo> list;
     ArrayList<ProductInfo> trans;
 
@@ -51,30 +51,25 @@ public class orderActivity extends AppCompatActivity {
 
     EditText editText;
     ListView listView;
-
-       public class ProductInfo {
+        //把JSON 類別化
+        public class ProductInfo {
         private String mProductName;
         private String mProductID;
         private int mProductCount=0;
         private int mStocks = 0;
-
+        //建構子
         ProductInfo(final String productName, final String productID, int productCount, int cShippersCountEd) {
             this.mProductName = productName;
             this.mProductID = productID;
             this.mProductCount = productCount;
 
         }
-
+        //方法
         @Override
         public String toString() {
             return this.mProductName + "(" + this.mProductID + ") " + this.mProductCount + " (" + this.mStocks + ")";
         }
     }
-
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +83,8 @@ public class orderActivity extends AppCompatActivity {
         check = bag.getString("checked", null);
         cUserName = bag.getString("cUserName", null);
         door1 = bag.getString("order", null);
-        //把check去中框號和中間空白處
+        Log.e("check",check);
+        //把check的JSON去中框號和中間空白處(變成check3) 才能POST
         //先取得字串的長度
         int i = check.length();
         //再取字串範圍 (0和最後是[])
@@ -97,7 +93,6 @@ public class orderActivity extends AppCompatActivity {
         //check3 = check2.replaceAll(", ", ",");
         check3 = check2.replaceAll(", ", ",");
         Log.e("check3", "check3: " + check3);
-
 
         TextView orderName = (TextView) findViewById(R.id.textView11);
         //把上一頁傳過來的door用TextView顯示
@@ -129,22 +124,25 @@ public class orderActivity extends AppCompatActivity {
                 postjson();
             }
         }).start();
+
         editText = (EditText) findViewById(R.id.editText);
         trans = new ArrayList<ProductInfo>();
         listView = (ListView) findViewById(R.id.list);
         listView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         list = new ArrayAdapter<>(orderActivity.this, android.R.layout.simple_list_item_activated_1, trans);
-
+        //switch 設定
         Switch sw = (Switch)findViewById(R.id.switch2);
         sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
+        //switch 點擊
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-               if(isChecked){
+                //點擊後 lineat就會顯示並且addNum=1
+                if(isChecked){
                    linear = (LinearLayout)findViewById(R.id.linear);
                    linear.setVisibility(View.VISIBLE);
                    addNum=1;
                }
+                //沒有點擊 addNum=0
                 else{
                    linear.setVisibility(View.INVISIBLE);
                    addNum=0;
@@ -167,7 +165,7 @@ public class orderActivity extends AppCompatActivity {
 
     //執行執行緒的方法
     private void postjson() {
-//post
+    //post
         RequestBody body = new FormBody.Builder()
                 .add("postdata", "{ ApiName: \"GetShippersD\", ApiID: \"" + check3 + "\"}")
                 .build();
@@ -202,9 +200,11 @@ public class orderActivity extends AppCompatActivity {
             for (int i = 0; i < array.length(); i++)
             {
                 JSONObject obj = array.getJSONObject(i);
+                //用自訂類別 把JSONArray的值取出來
                 trans.add(new ProductInfo(obj.optString("cProductName"), obj.optString("cProductID"),obj.optInt("cShippersCount"),obj.optInt("cShippersCountEd")));
                 Log.e("trans", String.valueOf(trans));
             }
+            //顯示listView(JSONArray的值)
             runOnUiThread(new Runnable()
             {
                 @Override
@@ -222,8 +222,9 @@ public class orderActivity extends AppCompatActivity {
     }
 
     public void enter(View v)
-    {
+    {   // 輸入的商品條碼的值 並得到他
         final String UserEnterKey = editText.getText().toString();
+        //類別
         final ProductInfo product = getProduct(UserEnterKey);
 
         if (product != null && product.mStocks>=0)
