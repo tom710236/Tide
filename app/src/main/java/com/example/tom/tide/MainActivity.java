@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         pass = new pass();
         pass.start();
 
+
     }
     //執行緒方法
     class pass extends Thread {

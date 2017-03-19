@@ -3,6 +3,15 @@
     package="com.example.tom.tide">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+    <permission
+        android:name="com.example.tom.tide.gcm.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.example.tom.tide.gcm.permission.C2D_MESSAGE" />
 
     <application
         android:allowBackup="true"
@@ -18,12 +27,47 @@
             </intent-filter>
         </activity>
         <activity android:name=".systemActivity" />
-        <activity android:name=".outActivity">
-        </activity>
-        <activity android:name=".orderActivity"
-            android:windowSoftInputMode="adjustResize">
+        <activity android:name=".outActivity" />
+        <activity
+            android:name=".orderActivity"
+            android:windowSoftInputMode="adjustResize" />
 
-        </activity>
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="com.tom.stock" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".MyGcmListenerService">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".RegistrationIntentService"
+            android:exported="false" />
+        <service android:name=".MyInstanceIDListenerService">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".Main2Activity"
+            android:label="@string/title_activity_main2"
+            android:theme="@style/AppTheme" />
+
+        <service
+            android:name=".Delay"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".ChatActivity"></activity>
     </application>
 
 </manifest>

@@ -73,6 +73,9 @@ public class systemActivity extends AppCompatActivity
                 systemActivity.this.finish();
                 break;
             case 1:
+                Intent intent1 = new Intent(this,Main2Activity.class);
+                startActivity(intent1);
+                systemActivity.this.finish();
                 break;
             case 2:
                 break;
